@@ -1,0 +1,98 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "vip scale",
+      "intents": [
+        {
+          "name": "AskGeminiIntent",
+          "slots": [
+            {
+              "name": "query",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "ask {query}",
+            "ask gemini {query}",
+            "what is {query}",
+            "tell me about {query}",
+            "explain {query}",
+            "answer {query}",
+            "search for {query}",
+            "I have a question about {query}",
+            "{query}"
+          ]
+        },
+        {
+          "name": "ClickUpIntent",
+          "slots": [
+            {
+              "name": "action",
+              "type": "ClickUpAction"
+            },
+            {
+              "name": "taskName",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "add a task {taskName} to clickup",
+            "create a task {taskName} in clickup",
+            "add {taskName} to clickup",
+            "create task {taskName}",
+            "list my tasks",
+            "list my clickup tasks",
+            "show my tasks",
+            "what tasks do I have",
+            "what are my open tasks",
+            "{action} a task {taskName}",
+            "{action} task {taskName}"
+          ]
+        },
+        {
+          "name": "SlackIntent",
+          "slots": [
+            {
+              "name": "message",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "send a message {message} to slack",
+            "post {message} to slack",
+            "send to slack {message}",
+            "message slack {message}",
+            "tell slack {message}",
+            "slack {message}"
+          ]
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        }
+      ],
+      "types": [
+        {
+          "name": "ClickUpAction",
+          "values": [
+            { "name": { "value": "create", "synonyms": ["add", "make", "new"] } },
+            { "name": { "value": "list", "synonyms": ["show", "get", "display"] } },
+            { "name": { "value": "update", "synonyms": ["change", "edit", "modify"] } }
+          ]
+        }
+      ]
+    }
+  }
+}

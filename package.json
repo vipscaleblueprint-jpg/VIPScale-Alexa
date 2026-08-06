@@ -1,0 +1,28 @@
+{
+  "name": "vipscale-alexa",
+  "version": "1.0.0",
+  "description": "Alexa skill powered by Gemini AI with ClickUp and Slack automation",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "generate-cert": "node scripts/generateCert.js"
+  },
+  "dependencies": {
+    "ask-sdk-core": "^2.14.0",
+    "ask-sdk-express-adapter": "^2.2.0",
+    "@google/generative-ai": "^0.21.0",
+    "@slack/web-api": "^7.3.4",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "selfsigned": "^2.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
