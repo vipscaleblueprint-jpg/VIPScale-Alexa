@@ -8,8 +8,9 @@ const { SkillRequestSignatureVerifier, TimestampVerifier } = require('ask-sdk-ex
  */
 async function alexaVerifier(req, res, next) {
   try {
-    await new SkillRequestSignatureVerifier().verify(JSON.stringify(req.body), req.headers);
-    await new TimestampVerifier().verify(JSON.stringify(req.body));
+    const rawBody = req.rawBody || JSON.stringify(req.body);
+    await new SkillRequestSignatureVerifier().verify(rawBody, req.headers);
+    await new TimestampVerifier().verify(rawBody);
     next();
   } catch (err) {
     console.error('[Verifier] Request verification failed:', err.message);
