@@ -19,12 +19,19 @@ const headers = {
  * @returns {Promise<object>} Created task object
  */
 async function createTask(name, description = '') {
-  const res = await axios.post(
-    `${BASE_URL}/list/${LIST_ID}/task`,
-    { name, description, status: 'to do' },
-    { headers }
-  );
-  return res.data;
+  console.log(`[ClickUpService] Creating task: "${name}"`);
+  try {
+    const res = await axios.post(
+      `${BASE_URL}/list/${LIST_ID}/task`,
+      { name, description, status: 'to do' },
+      { headers }
+    );
+    console.log(`[ClickUpService] Task created successfully: ${res.data.url}`);
+    return res.data;
+  } catch (err) {
+    console.error('[ClickUpService] Error creating task:', err.response?.data || err.message);
+    throw err;
+  }
 }
 
 /**
@@ -33,11 +40,19 @@ async function createTask(name, description = '') {
  * @returns {Promise<Array>} Array of task objects
  */
 async function listTasks(limit = 5) {
-  const res = await axios.get(`${BASE_URL}/list/${LIST_ID}/task`, {
-    headers,
-    params: { statuses: ['to do', 'in progress'], order_by: 'created', reverse: true },
-  });
-  return (res.data.tasks || []).slice(0, limit);
+  console.log(`[ClickUpService] Fetching tasks (limit ${limit})`);
+  try {
+    const res = await axios.get(`${BASE_URL}/list/${LIST_ID}/task`, {
+      headers,
+      params: { statuses: ['to do', 'in progress'], order_by: 'created', reverse: true },
+    });
+    const tasks = (res.data.tasks || []).slice(0, limit);
+    console.log(`[ClickUpService] Successfully fetched ${tasks.length} tasks`);
+    return tasks;
+  } catch (err) {
+    console.error('[ClickUpService] Error listing tasks:', err.response?.data || err.message);
+    throw err;
+  }
 }
 
 /**

@@ -13,8 +13,15 @@ const DEFAULT_CHANNEL = process.env.SLACK_CHANNEL_ID;
  * @returns {Promise<object>} Slack API response
  */
 async function postMessage(text, channel = DEFAULT_CHANNEL) {
-  const res = await slack.chat.postMessage({ channel, text });
-  return res;
+  console.log(`[SlackService] Posting message to channel ${channel}: "${text}"`);
+  try {
+    const res = await slack.chat.postMessage({ channel, text });
+    console.log(`[SlackService] Message posted successfully (ts: ${res.ts})`);
+    return res;
+  } catch (err) {
+    console.error('[SlackService] Error posting message:', err.message);
+    throw err;
+  }
 }
 
 module.exports = { postMessage };

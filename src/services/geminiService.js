@@ -43,10 +43,13 @@ async function chat(sessionId, message) {
   }
 
   sessionData.lastUsed = Date.now();
+  console.log(`[GeminiService] Calling Gemini API (session: ${sessionId.substring(0, 15)}...) with prompt: "${message}"`);
 
   try {
     const result = await sessionData.chat.sendMessage(message);
-    return result.response.text();
+    const textResponse = result.response.text();
+    console.log(`[GeminiService] Success! Response: "${textResponse}"`);
+    return textResponse;
   } catch (err) {
     console.error('[GeminiService] Error calling Gemini API:', err.message);
     throw new Error('Gemini API call failed');

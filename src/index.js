@@ -28,6 +28,23 @@ app.use(
   })
 );
 
+// ── Request Logging Middleware ────────────────────────────────────────────────
+app.use((req, res, next) => {
+  console.log(`\n[${new Date().toISOString()}] 📥 ${req.method} ${req.path}`);
+  if (req.path === '/alexa' && req.body) {
+    console.log(`   └─ Request Type: ${req.body.request?.type}`);
+    if (req.body.request?.type === 'IntentRequest') {
+      const intent = req.body.request.intent;
+      console.log(`   └─ Intent Name:  ${intent?.name}`);
+      const slots = Object.values(intent?.slots || {}).filter(s => s.value);
+      if (slots.length > 0) {
+        console.log(`   └─ Slots:        ${JSON.stringify(slots.map(s => `${s.name}=${s.value}`))}`);
+      }
+    }
+  }
+  next();
+});
+
 // ── Health check endpoint ──────────────────────────────────────────────────────
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
