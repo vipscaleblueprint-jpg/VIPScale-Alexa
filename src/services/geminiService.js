@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const logger = require('../utils/logger');
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API);
 const modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
@@ -43,15 +44,15 @@ async function chat(sessionId, message) {
   }
 
   sessionData.lastUsed = Date.now();
-  console.log(`[GeminiService] Calling Gemini API (session: ${sessionId.substring(0, 15)}...) with prompt: "${message}"`);
+  logger.info(`[GeminiService] Calling Gemini API (session: ${sessionId.substring(0, 15)}...) with prompt: "${message}"`);
 
   try {
     const result = await sessionData.chat.sendMessage(message);
     const textResponse = result.response.text();
-    console.log(`[GeminiService] Success! Response: "${textResponse}"`);
+    logger.info(`[GeminiService] Success! Response: "${textResponse}"`);
     return textResponse;
   } catch (err) {
-    console.error('[GeminiService] Error calling Gemini API:', err.message);
+    logger.error(`[GeminiService] Error calling Gemini API: ${err.message}`);
     throw new Error('Gemini API call failed');
   }
 }

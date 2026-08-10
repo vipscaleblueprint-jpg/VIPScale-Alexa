@@ -1,6 +1,7 @@
 'use strict';
 
 const slackService = require('../services/slackService');
+const logger = require('../utils/logger');
 
 const SlackIntentHandler = {
   canHandle(handlerInput) {
@@ -27,7 +28,7 @@ const SlackIntentHandler = {
         .reprompt('Anything else?')
         .getResponse();
     } catch (err) {
-      console.error('[SlackIntent] Error:', err.message);
+      logger.error(`[SlackIntent] Error: ${err.message}`);
       return handlerInput.responseBuilder
         .speak('Sorry, I had trouble sending the message to Slack. Please check your bot token and try again.')
         .getResponse();

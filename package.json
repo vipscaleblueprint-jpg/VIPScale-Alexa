@@ -9,15 +9,17 @@
     "generate-cert": "node scripts/generateCert.js"
   },
   "dependencies": {
-    "ask-sdk-core": "^2.14.0",
-    "ask-sdk-express-adapter": "^2.2.0",
     "@google/generative-ai": "^0.21.0",
     "@slack/web-api": "^7.3.4",
+    "ask-sdk-core": "^2.14.0",
+    "ask-sdk-express-adapter": "^2.2.0",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "helmet": "^8.0.0",
-    "selfsigned": "^2.4.1"
+    "morgan": "^1.11.0",
+    "selfsigned": "^2.4.1",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

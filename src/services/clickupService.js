@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 const axios = require('axios');
+const logger = require('../utils/logger');
 
 const BASE_URL = 'https://api.clickup.com/api/v2';
 const TOKEN = process.env.CLICKUP_API_TOKEN;
@@ -19,17 +20,17 @@ const headers = {
  * @returns {Promise<object>} Created task object
  */
 async function createTask(name, description = '') {
-  console.log(`[ClickUpService] Creating task: "${name}"`);
+  logger.info(`[ClickUpService] Creating task: "${name}"`);
   try {
     const res = await axios.post(
       `${BASE_URL}/list/${LIST_ID}/task`,
       { name, description, status: 'to do' },
       { headers }
     );
-    console.log(`[ClickUpService] Task created successfully: ${res.data.url}`);
+    logger.info(`[ClickUpService] Task created successfully: ${res.data.url}`);
     return res.data;
   } catch (err) {
-    console.error('[ClickUpService] Error creating task:', err.response?.data || err.message);
+    logger.error(`[ClickUpService] Error creating task: ${JSON.stringify(err.response?.data || err.message)}`);
     throw err;
   }
 }
@@ -40,17 +41,17 @@ async function createTask(name, description = '') {
  * @returns {Promise<Array>} Array of task objects
  */
 async function listTasks(limit = 5) {
-  console.log(`[ClickUpService] Fetching tasks (limit ${limit})`);
+  logger.info(`[ClickUpService] Fetching tasks (limit ${limit})`);
   try {
     const res = await axios.get(`${BASE_URL}/list/${LIST_ID}/task`, {
       headers,
       params: { statuses: ['to do', 'in progress'], order_by: 'created', reverse: true },
     });
     const tasks = (res.data.tasks || []).slice(0, limit);
-    console.log(`[ClickUpService] Successfully fetched ${tasks.length} tasks`);
+    logger.info(`[ClickUpService] Successfully fetched ${tasks.length} tasks`);
     return tasks;
   } catch (err) {
-    console.error('[ClickUpService] Error listing tasks:', err.response?.data || err.message);
+    logger.error(`[ClickUpService] Error listing tasks: ${JSON.stringify(err.response?.data || err.message)}`);
     throw err;
   }
 }
@@ -62,12 +63,19 @@ async function listTasks(limit = 5) {
  * @returns {Promise<object>} Updated task object
  */
 async function updateTaskStatus(taskId, status) {
-  const res = await axios.put(
-    `${BASE_URL}/task/${taskId}`,
-    { status },
-    { headers }
-  );
-  return res.data;
+  logger.info(`[ClickUpService] Updating task ${taskId} status to "${status}"`);
+  try {
+    const res = await axios.put(
+      `${BASE_URL}/task/${taskId}`,
+      { status },
+      { headers }
+    );
+    logger.info(`[ClickUpService] Task status updated successfully`);
+    return res.data;
+  } catch (err) {
+    logger.error(`[ClickUpService] Error updating task status: ${JSON.stringify(err.response?.data || err.message)}`);
+    throw err;
+  }
 }
 
 module.exports = { createTask, listTasks, updateTaskStatus };

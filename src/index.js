@@ -8,9 +8,11 @@ const https = require('https');
 const http = require('http');
 const express = require('express');
 const helmet = require('helmet');
+const morgan = require('morgan');
 
 const { adapter } = require('./alexaHandler');
 const { alexaVerifier } = require('./utils/verifier');
+const logger = require('./utils/logger');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,17 +30,25 @@ app.use(
   })
 );
 
-// ── Request Logging Middleware ────────────────────────────────────────────────
+// ── Morgan HTTP Request Logger ────────────────────────────────────────────────
+app.use(
+  morgan(':method :url :status :res[content-length] - :response-time ms', {
+    stream: {
+      write: (message) => logger.info(`HTTP Request: ${message.trim()}`),
+    },
+  })
+);
+
+// ── Alexa Intent Logging Middleware ───────────────────────────────────────────
 app.use((req, res, next) => {
-  console.log(`\n[${new Date().toISOString()}] 📥 ${req.method} ${req.path}`);
-  if (req.path === '/alexa' && req.body) {
-    console.log(`   └─ Request Type: ${req.body.request?.type}`);
+  if ((req.path === '/alexa' || req.path === '/') && req.body) {
+    logger.info(`Alexa Request Type: ${req.body.request?.type}`);
     if (req.body.request?.type === 'IntentRequest') {
       const intent = req.body.request.intent;
-      console.log(`   └─ Intent Name:  ${intent?.name}`);
+      logger.info(`Alexa Intent Name:  ${intent?.name}`);
       const slots = Object.values(intent?.slots || {}).filter(s => s.value);
       if (slots.length > 0) {
-        console.log(`   └─ Slots:        ${JSON.stringify(slots.map(s => `${s.name}=${s.value}`))}`);
+        logger.info(`Alexa Slots:        ${JSON.stringify(slots.map(s => `${s.name}=${s.value}`))}`);
       }
     }
   }
@@ -51,7 +61,7 @@ app.get('/health', (_req, res) => {
 });
 
 // ── Alexa skill endpoint ───────────────────────────────────────────────────────
-app.post('/alexa', alexaVerifier, adapter.getRequestHandlers());
+app.post(['/', '/alexa'], alexaVerifier, adapter.getRequestHandlers());
 
 // ── 404 fallback ──────────────────────────────────────────────────────────────
 app.use((_req, res) => {
@@ -71,21 +81,21 @@ function startServer() {
       cert: fs.readFileSync(certPath),
     };
     https.createServer(credentials, app).listen(PORT, () => {
-      console.log(`✅  HTTPS server running on port ${PORT}`);
-      console.log(`   Alexa endpoint: https://your-domain.com:${PORT}/alexa`);
-      console.log(`   Health check:   https://your-domain.com:${PORT}/health`);
+      logger.info(`✅ HTTPS server running on port ${PORT}`);
+      logger.info(`   Alexa endpoint: https://your-domain.com:${PORT}/alexa`);
+      logger.info(`   Health check:   https://your-domain.com:${PORT}/health`);
     });
   } else {
     // Fall back to HTTP for local development without certs
-    console.warn(
-      '⚠️  No SSL certificates found in ssl/ directory.\n' +
+    logger.warn(
+      'No SSL certificates found in ssl/ directory.\n' +
         '   Run "npm run generate-cert" to create a self-signed cert, or\n' +
         '   place your Let\'s Encrypt cert.pem and key.pem in the ssl/ folder.\n' +
         '   Starting HTTP server for local development only...'
     );
     http.createServer(app).listen(PORT, () => {
-      console.log(`⚡  HTTP server running on port ${PORT} (dev only)`);
-      console.log(`   Health check: http://localhost:${PORT}/health`);
+      logger.info(`⚡ HTTP server running on port ${PORT} (dev only)`);
+      logger.info(`   Health check: http://localhost:${PORT}/health`);
     });
   }
 }

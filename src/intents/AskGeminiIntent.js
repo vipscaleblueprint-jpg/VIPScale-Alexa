@@ -1,6 +1,7 @@
 'use strict';
 
 const geminiService = require('../services/geminiService');
+const logger = require('../utils/logger');
 
 const AskGeminiIntentHandler = {
   canHandle(handlerInput) {
@@ -35,7 +36,7 @@ const AskGeminiIntentHandler = {
         .reprompt('Do you have another question?')
         .getResponse();
     } catch (err) {
-      console.error('[AskGeminiIntent] Error:', err.message);
+      logger.error(`[AskGeminiIntent] Error: ${err.message}`);
       return handlerInput.responseBuilder
         .speak('Sorry, I had trouble reaching Gemini right now. Please try again in a moment.')
         .getResponse();

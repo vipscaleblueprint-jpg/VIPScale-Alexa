@@ -1,5 +1,7 @@
 'use strict';
 
+const logger = require('../utils/logger');
+
 // ─── Launch Request ────────────────────────────────────────────────────────────
 const LaunchRequestHandler = {
   canHandle(handlerInput) {
@@ -56,7 +58,7 @@ const SessionEndedRequestHandler = {
     return handlerInput.requestEnvelope.request.type === 'SessionEndedRequest';
   },
   handle(handlerInput) {
-    console.log('[Session] Ended:', handlerInput.requestEnvelope.request.reason);
+    logger.info(`[Session] Ended: ${handlerInput.requestEnvelope.request.reason}`);
     return handlerInput.responseBuilder.getResponse();
   },
 };
@@ -67,7 +69,7 @@ const ErrorHandler = {
     return true;
   },
   handle(handlerInput, error) {
-    console.error('[ErrorHandler]', error.message, error.stack);
+    logger.error(`[ErrorHandler] ${error.message} ${error.stack}`);
     const speech =
       'Sorry, I ran into an issue processing your request. Please try again.';
     return handlerInput.responseBuilder.speak(speech).reprompt(speech).getResponse();

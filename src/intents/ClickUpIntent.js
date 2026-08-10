@@ -1,6 +1,7 @@
 'use strict';
 
 const clickupService = require('../services/clickupService');
+const logger = require('../utils/logger');
 
 const ClickUpIntentHandler = {
   canHandle(handlerInput) {
@@ -57,7 +58,7 @@ const ClickUpIntentHandler = {
         .reprompt('What would you like to do with ClickUp?')
         .getResponse();
     } catch (err) {
-      console.error('[ClickUpIntent] Error:', err.message);
+      logger.error(`[ClickUpIntent] Error: ${err.message}`);
       return handlerInput.responseBuilder
         .speak('Sorry, I had trouble connecting to ClickUp. Please check your configuration and try again.')
         .getResponse();
