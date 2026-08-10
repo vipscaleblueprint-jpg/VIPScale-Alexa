@@ -11,8 +11,12 @@ const ClickUpIntentHandler = {
   },
   async handle(handlerInput) {
     const slots = handlerInput.requestEnvelope.request.intent.slots || {};
-    const action = slots.action?.value?.toLowerCase() || 'list';
+    let action = slots.action?.value?.toLowerCase();
     const taskName = slots.taskName?.value;
+
+    if (!action) {
+      action = taskName ? 'create' : 'list';
+    }
 
     try {
       // ── Create a task ──────────────────────────────────────────────────────

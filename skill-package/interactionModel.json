@@ -19,8 +19,7 @@
             "explain {query}",
             "answer {query}",
             "search for {query}",
-            "I have a question about {query}",
-            "{query}"
+            "I have a question about {query}"
           ]
         },
         {
@@ -40,13 +39,16 @@
             "create a task {taskName} in clickup",
             "add {taskName} to clickup",
             "create task {taskName}",
+            "add a task {taskName}",
+            "create a task {taskName}",
+            "add task {taskName}",
             "list my tasks",
             "list my clickup tasks",
             "show my tasks",
             "what tasks do I have",
             "what are my open tasks",
-            "{action} a task {taskName}",
-            "{action} task {taskName}"
+            "{action} tasks",
+            "{action} my tasks"
           ]
         },
         {
