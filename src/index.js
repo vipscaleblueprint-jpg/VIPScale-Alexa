@@ -68,6 +68,12 @@ app.use((_req, res) => {
   res.status(404).json({ error: 'Not found' });
 });
 
+// ── Error handling middleware ─────────────────────────────────────────────────
+app.use((err, req, res, next) => {
+  logger.error(`[Express] Unhandled Error: ${err.message}\n${err.stack}`);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
+
 // ── Start server ───────────────────────────────────────────────────────────────
 function startServer() {
   const sslDir = path.join(__dirname, '..', 'ssl');

@@ -28,7 +28,7 @@ const skill = Alexa.SkillBuilders.custom()
   .addErrorHandlers(ErrorHandler)
   .create();
 
-// Create an Express-compatible adapter from the skill
-const adapter = new ExpressAdapter(skill, true, true);
+// Create an Express-compatible adapter from the skill (verification is handled by custom middleware)
+const adapter = new ExpressAdapter(skill, false, false);
 
 module.exports = { adapter };
