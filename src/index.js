@@ -42,6 +42,7 @@ app.use(
 // ── Alexa Intent Logging Middleware ───────────────────────────────────────────
 app.use((req, res, next) => {
   if ((req.path === '/alexa' || req.path === '/') && req.body) {
+    logger.info(`Alexa Headers: ${JSON.stringify(req.headers)}`);
     logger.info(`Alexa Request Type: ${req.body.request?.type}`);
     if (req.body.request?.type === 'IntentRequest') {
       const intent = req.body.request.intent;
