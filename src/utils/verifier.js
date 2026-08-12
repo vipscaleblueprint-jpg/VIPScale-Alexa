@@ -8,6 +8,10 @@ const logger = require('./logger');
  * Validates the signature and timestamp to reject unauthorized calls.
  */
 async function alexaVerifier(req, res, next) {
+  if (process.env.BYPASS_ALEXA_VERIFICATION === 'true') {
+    logger.warn('[Verifier] Alexa request verification bypassed (BYPASS_ALEXA_VERIFICATION is true)');
+    return next();
+  }
   try {
     const rawBody = req.rawBody || JSON.stringify(req.body);
     await new SkillRequestSignatureVerifier().verify(rawBody, req.headers);

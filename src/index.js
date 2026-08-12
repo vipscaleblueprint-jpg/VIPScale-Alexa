@@ -61,7 +61,14 @@ app.get('/health', (_req, res) => {
 });
 
 // ── Alexa skill endpoint ───────────────────────────────────────────────────────
-app.post(['/', '/alexa'], alexaVerifier, adapter.getRequestHandlers());
+app.post(['/', '/alexa'], alexaVerifier, async (req, res, next) => {
+  try {
+    const responseEnvelope = await adapter.skill.invoke(req.body);
+    res.json(responseEnvelope);
+  } catch (err) {
+    next(err);
+  }
+});
 
 // ── 404 fallback ──────────────────────────────────────────────────────────────
 app.use((_req, res) => {
